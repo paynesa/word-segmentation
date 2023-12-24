@@ -133,10 +133,26 @@ def zipfian_check(sentences, save_path=None):
         plt.show()
 
 
-if __name__ == "__main__":
+def write_sentences(sentences, path):
+    """Write out the generated sentences"""
+    with open(path, "a") as f:
+        for sentence in sentences:
+            f.write(f"{sentence}\n")
+    f.close()
+
+
+def make_data(n=10):
+    """This function makes 10 training and testing files based on random sampling"""
     syllables = make_syllables()
-    words, freqs = make_words(syllables)
-    print(words, freqs)
-    sentences = make_sentences(words, freqs, 60000)
-    print(sentences)
-    zipfian_check(sentences, "test.png")
+    for i in range(n):
+        print(f"Generating {i}th Train-Test...")
+        words, freqs = make_words(syllables)
+        train_sentences = make_sentences(words, freqs, 60000)
+        test_sentences = make_sentences(words, freqs, 400)
+        write_sentences(train_sentences, f"data/train_{i}.txt")
+        write_sentences(test_sentences, f"data/test_{i}.txt")
+    zipfian_check(train_sentences, "figs/zipf.png")
+
+
+if __name__ == "__main__":
+    make_data()
